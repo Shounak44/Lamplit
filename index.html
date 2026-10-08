@@ -93,13 +93,24 @@ body.t-fire #shelfView{animation:fl 2.6s ease-in-out infinite alternate}
 @media (max-width:600px){.row{height:262px}.inner{padding:calc(22px + env(safe-area-inset-top,0px)) 14px 170px}.case{border-width:12px;padding:14px 8px 0}.case::before{left:-12px;right:-12px;top:-12px;height:12px}.plank{margin:0 -8px}.rbar{padding:calc(8px + env(safe-area-inset-top,0px)) 10px 8px;gap:6px}.rbar button,.rbar select{padding:6px 10px;font-size:13px}.page{padding:30px 16px 190px}.page p{text-align:left}.top{gap:12px}.acts button,.acts label{font-size:14px}}
 @media (hover:none){.spine:hover{transform:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* find books + youtube */
+.fbar{display:flex;gap:8px;margin:10px 0 6px}.fbar input[type=search],.fbar input[type=text],.fbar input[type=password]{flex:1;min-width:0;font:inherit;font-size:15px;color:var(--cream);background:var(--wall2);border:1px solid color-mix(in srgb,var(--brass) 45%,transparent);border-radius:2px;padding:8px 10px}
+.fbar button{flex:none}.note{font-size:13px;color:var(--muted);margin:6px 0}.warn{font-size:14px;color:#f0c9a0;border:1px solid #8a5a2a;padding:8px 10px;border-radius:2px;margin:10px 0}
+.item.col{align-items:flex-start}.item button:disabled{opacity:.5;cursor:default}
+.yt{position:fixed;right:12px;bottom:calc(70px + env(safe-area-inset-bottom,0px));width:min(340px,calc(100vw - 24px));z-index:30;background:color-mix(in srgb,var(--wall) 94%,#000);border:1px solid color-mix(in srgb,var(--brass) 55%,transparent);border-radius:6px;box-shadow:0 18px 40px -10px #000;overflow:hidden}
+.yth{display:flex;align-items:center;gap:6px;padding:4px 6px 4px 12px;cursor:grab;touch-action:none;user-select:none;border-bottom:1px solid var(--line)}
+.yth span{flex:1;min-width:0;font:600 15px var(--disp);color:var(--brass);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yth button{padding:2px 10px;font-size:16px;line-height:1.2;border-radius:999px;flex:none}
+.ytb{aspect-ratio:16/9;background:#000}.ytb iframe{width:100%;height:100%;border:0;display:block}
+.yt.min .ytb{height:0;aspect-ratio:auto}.yt.min .yth{border-bottom:0}
 </style>
 </head>
 <body>
 <div id="shelfView" class="view"><div class="inner">
 <header class="top">
 <div><h1>Lamplit</h1><p class="sub">Light a lamp. Open a book.</p></div>
-<div class="acts"><label class="pri" for="file" style="padding:7px 15px;border:1px solid;cursor:pointer;border-radius:2px;font-weight:500">Add book</label><button id="edit">Edit shelf</button><button id="menu">Library and help</button></div>
+<div class="acts"><label class="pri" for="file" style="padding:7px 15px;border:1px solid;cursor:pointer;border-radius:2px;font-weight:500">Add book</label><button id="findb">Find books</button><button id="edit">Edit shelf</button><button id="menu">Library and help</button></div>
 </header>
 <div class="orn">&#10086;</div>
 <div class="stats">
@@ -119,11 +130,13 @@ body.t-fire #shelfView{animation:fl 2.6s ease-in-out infinite alternate}
 </section>
 <div id="prog"></div>
 
-<nav class="dock" aria-label="Sounds"><button id="snd">&#9835; Sounds</button><span id="now"></span><button id="stopall" class="hidden">Stop</button></nav>
+<nav class="dock" aria-label="Sounds"><button id="snd">&#9835; Sounds</button><button id="ytb">&#9654; YouTube</button><span id="now"></span><button id="stopall" class="hidden">Stop</button></nav>
+
+<div id="yt" class="yt hidden" aria-label="YouTube mini player"><div class="yth" id="yth"><span id="ytt">YouTube</span><button id="ytm" aria-label="Minimise player">&minus;</button><button id="ytx" aria-label="Close player">&times;</button></div><div class="ytb" id="ytbody"></div></div>
 
 <div id="scrim" class="scrim hidden"></div>
 <aside id="drawer" class="drawer" aria-label="Library and help">
-<div class="dh"><div class="tabs"><button data-t="books" class="on">Books</button><button data-t="marks">Bookmarks</button><button data-t="sounds">Sounds</button><button data-t="help">Help</button></div><button id="dx" aria-label="Close panel">&times;</button></div>
+<div class="dh"><div class="tabs"><button data-t="books" class="on">Books</button><button data-t="find">Find books</button><button data-t="marks">Bookmarks</button><button data-t="sounds">Sounds</button><button data-t="yt">YouTube</button><button data-t="help">Help</button></div><button id="dx" aria-label="Close panel">&times;</button></div>
 <div id="dbody" class="db"></div>
 </aside>
 <div id="toast" role="status"></div>
@@ -235,7 +248,9 @@ it.append(w,bt);d.append(it)})});
 d.append(E("h3",null,"Add your own track"));const sel=E("select");sel.setAttribute("aria-label","Track type");sel.innerHTML='<option value="amb">As ambience</option><option value="mus">As music</option>';sel.value=akind;sel.onchange=()=>{akind=sel.value};
 const lb=E("label","pbtn","Choose audio file");lb.htmlFor="afile";const row=E("div");row.append(sel,lb);d.append(row);
 d.append(E("p",null,"MP3, WAV and OGG files work. Your tracks stay on this device and are not uploaded anywhere. Every track fades out and back in so it loops without a gap."))}
-if(tab==="help"){d.innerHTML='<h3>How it works</h3><ol><li>Get a DRM-free EPUB, PDF or TXT file from one of the places below.</li><li>Press Add book (or drop the file anywhere on the shelf). It appears as a spine on your shelf.</li><li>Click a spine to read. Press Bookmark to save your spot, then find it under Bookmarks.</li><li>Open Sounds at the bottom to play ambience and music together, or add your own tracks. Reading earns XP, and a focus sprint earns a bonus.</li></ol>'+
+if(tab==="find")findPanel(d);
+if(tab==="yt")ytPanel(d);
+if(tab==="help"){d.innerHTML='<h3>How it works</h3><ol><li>Press Find books to search free public domain books while you are online, or upload your own DRM-free EPUB, PDF or TXT file with Add book.</li><li>Press Add book (or drop the file anywhere on the shelf). It appears as a spine on your shelf.</li><li>Click a spine to read. Press Bookmark to save your spot, then find it under Bookmarks.</li><li>Open Sounds at the bottom to play ambience and music together, or add your own tracks. Reading earns XP, and a focus sprint earns a bonus.</li><li>Press YouTube to open a mini player and play any music you like while you read. It needs internet and stays open on every screen.</li></ol>'+
 '<h3>Where to download books</h3><div id="srcs"></div><h3>Good to know</h3><p>Your shelf, bookmarks, progress and your own sound tracks are saved in this browser only. Clearing site data removes them. PDFs are converted to plain reflowable text, so images, tables and page layout are dropped, and scanned PDFs with no text cannot be read. Books bought from stores usually have DRM and will not open here. Choose the plain EPUB without images for the cleanest reading.</p>';
 [["Project Gutenberg","https://www.gutenberg.org","Tens of thousands of public domain classics."],["Standard Ebooks","https://standardebooks.org","Carefully formatted public domain editions."],["Internet Archive","https://archive.org","Huge free collection, look for EPUB downloads."],["Open Library","https://openlibrary.org","Search many editions, some free to download."],["Wikisource","https://wikisource.org","Free texts, most can be exported as EPUB."]].forEach(s=>{const x=E("div","src"),a=E("a",null,s[0]);a.href=s[1];a.target="_blank";a.rel="noopener";x.append(a,E("small",null,s[2]));d.querySelector("#srcs").append(x)})}}
 /* sounds: bundled loops + user tracks, two layers (ambience, music) with crossfade looping */
@@ -286,6 +301,94 @@ const sv=$("shelfView");sv.ondragover=e=>{e.preventDefault();sv.classList.add("d
 sv.ondrop=e=>{e.preventDefault();sv.classList.remove("drag");add(e.dataTransfer.files[0])};
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 addEventListener("pagehide",save);document.addEventListener("visibilitychange",()=>{if(document.hidden)save()});
+/* find books (Project Gutenberg via Gutendex) */
+const F={q:"",res:null,next:null,busy:false,err:"",tok:0,dl:{},fail:{},started:false};
+const PROXY="https://lamplit.shounakhazra0.workers.dev";/* paste your Cloudflare Worker address here, e.g. https://lamplit.yourname.workers.dev */
+const px=u=>PROXY?PROXY.replace(/\/$/,"")+"/get?url="+encodeURIComponent(u):u;
+const GX="https://gutendex.com/books";
+const drawerOpen=()=>$("drawer").classList.contains("open");
+const online=()=>navigator.onLine!==false;
+const who=g=>((g.authors||[]).map(a=>a.name).filter(Boolean).map(n=>n.includes(", ")?n.split(", ").reverse().join(" "):n).join(", "))||"Unknown author";
+async function gsearch(url,more){const t=++F.tok;F.busy=true;F.err="";if(tab==="find"&&drawerOpen())panel();
+try{const r=await fetch(px(url));if(!r.ok)throw new Error("bad");const j=await r.json();if(t!==F.tok)return;F.res=(more&&F.res?F.res:[]).concat(j.results||[]);F.next=j.next||null}
+catch(e){if(t===F.tok){let ok=false;if(!more){try{F.res=await isearch(F.q.trim());F.next=null;ok=true}catch(e2){}}if(!ok)F.err=online()?"Could not reach the book catalogue right now. Try again in a moment.":"You are offline."}}
+if(t===F.tok){F.busy=false;if(tab==="find"&&drawerOpen())panel()}}
+async function isearch(q){const qq=(q?"("+q.replace(/[()"]/g," ")+") AND ":"")+"collection:gutenberg";
+const r=await fetch("https://archive.org/advancedsearch.php?q="+encodeURIComponent(qq)+"&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&sort%5B%5D=downloads+desc&rows=24&page=1&output=json");if(!r.ok)throw new Error("bad");
+const d=((await r.json()).response||{}).docs||[];if(!d.length)throw new Error("none");
+return d.map(x=>({id:"ia:"+x.identifier,ia:x.identifier,title:x.title,authors:[{name:[].concat(x.creator||[]).join(", ")}].filter(a=>a.name)}))}
+function fsearch(){const q=F.q.trim();gsearch(GX+"?"+(q?"search="+encodeURIComponent(q):"sort=popular"))}
+async function fetchAny(u,isE){u=u.replace(/^http:/,"https:");const tries=PROXY?[px(u)]:[u,"https://corsproxy.io/?url="+encodeURIComponent(u),"https://api.allorigins.win/raw?url="+encodeURIComponent(u)];
+for(const t of tries){try{const r=await fetch(t);if(!r.ok)continue;const b=await r.blob();if(b.size<2000)continue;
+const h=new Uint8Array(await b.slice(0,16).arrayBuffer());let head="";h.forEach(c=>head+=String.fromCharCode(c));
+if(isE?head.slice(0,2)!=="PK":/^\s*<(!doctype|html)/i.test(head))continue;return b}catch(e){}}
+throw new Error(online()?"Could not download this book right now. Try again in a moment.":"You are offline.")}
+async function addGut(g){if(F.dl[g.id])return;F.dl[g.id]=1;if(tab==="find"&&drawerOpen())panel();
+try{let u,isE;toast("Downloading...",8000);
+if(g.ia){const m=await (await fetch(px("https://archive.org/metadata/"+encodeURIComponent(g.ia)))).json();const f=(m.files||[]).find(x=>/\.epub$/i.test(x.name));if(!f)throw new Error("No EPUB file is available for this book.");u="https://archive.org/download/"+encodeURIComponent(g.ia)+"/"+f.name.split("/").map(encodeURIComponent).join("/");isE=true}
+else{const fm=g.formats||{},k=Object.keys(fm).find(x=>x.startsWith("application/epub+zip")),tk=Object.keys(fm).find(x=>x.startsWith("text/plain"));u=fm[k]||fm[tk];isE=!!fm[k]}
+if(!u)throw new Error("No readable file is available for this book.");
+const blob=await fetchAny(u,isE);const name=(g.title||"book").replace(/[\\/:*?"<>|]+/g," ").trim().slice(0,80)+(isE?".epub":".txt");
+const n=books.length;await add(new File([blob],name,{type:blob.type}));
+if(books.length>n){delete F.fail[g.id];const b=books[books.length-1];b.gid=g.id;if(!b.title||b.title===name)b.title=g.title;if(/^(Unknown author|Text file)$/.test(b.author))b.author=who(g);await idb("put",b)}}
+catch(e){F.fail[g.id]=1;toast((e&&e.message&&e.message.length<100?e.message:"Could not add that book.")+" Tap Get file, save it, then use Add book.",8000)}
+delete F.dl[g.id];if(tab==="find"&&drawerOpen())panel()}
+function findPanel(d){d.append(E("h3",null,"Find free books"));
+d.append(E("p",null,"Search Project Gutenberg, a library of public domain books you can read legally. Pick a book and it lands on your shelf. You can still upload your own files with Add book."));
+if(!online()){d.append(E("div","warn","You are offline. Finding books needs internet. Your shelf and uploaded books still work."));return}
+const f=E("form","fbar"),i=E("input");i.type="search";i.placeholder="Title or author";i.value=F.q;i.setAttribute("aria-label","Search books");i.oninput=()=>{F.q=i.value};
+const b=E("button",null,"Search");b.type="submit";f.append(i,b);f.onsubmit=e=>{e.preventDefault();F.q=i.value;fsearch()};d.append(f);
+if(F.res===null&&!F.busy&&!F.err&&!F.started){F.started=true;setTimeout(fsearch,0)}
+if(F.err){d.append(E("div","warn",F.err))}
+if(F.res&&!F.res.length&&!F.busy)d.append(E("p",null,"No books found. Try another title or author."));
+(F.res||[]).forEach(g=>{const it=E("div","item"),w=E("div");w.append(E("b",null,g.title||"Untitled"),E("span",null,who(g)));
+const bt=E("div","bt"),has=books.some(x=>x.gid===g.id),ing=!!F.dl[g.id],a=E("button",null,has?"On shelf":ing?"Adding...":"Add");a.disabled=has||ing;a.onclick=()=>addGut(g);bt.append(a);if(F.fail[g.id]&&!has){const l=E("a","pbtn","Get file");l.href=g.ia?"https://archive.org/details/"+encodeURIComponent(g.ia):"https://www.gutenberg.org/ebooks/"+g.id;l.target="_blank";l.rel="noopener";l.style.cssText="padding:4px 10px;font-size:13px;color:inherit;text-decoration:none";bt.append(l)}it.append(w,bt);d.append(it)});
+if(F.busy)d.append(E("p","note","Loading..."));
+if(F.next&&!F.busy){const m=E("button",null,"More results");m.style.marginTop="12px";m.onclick=()=>gsearch(F.next,true);d.append(m)}
+d.append(E("p","note","Free public domain books from Project Gutenberg, with the Internet Archive as a backup source."))}
+/* youtube mini player */
+const Y={q:"",res:null,busy:false,err:"",tok:0};
+function parseYT(s){s=(s||"").trim();if(/^[\w-]{11}$/.test(s))return{v:s};let u;try{u=new URL(/^https?:/i.test(s)?s:"https://"+s)}catch(e){return null}
+const h=u.hostname.replace(/^www\.|^m\.|^music\./,"");if(!/^(youtube\.com|youtube-nocookie\.com|youtu\.be)$/.test(h))return null;
+const l=u.searchParams.get("list"),p=u.pathname.split("/").filter(Boolean);let v=u.searchParams.get("v");
+if(h==="youtu.be")v=p[0];else if(["embed","shorts","live","v"].includes(p[0])&&p[1]&&p[1]!=="videoseries")v=p[1];
+if(v&&!/^[\w-]{11}$/.test(v))v=null;if(!v&&!l)return null;return{v,l}}
+function playYT(o,title){if(!online()){toast("You are offline. YouTube needs internet.");return}
+const src=o.ch?"https://www.youtube.com/embed/live_stream?channel="+encodeURIComponent(o.ch)+"&autoplay=1&playsinline=1&rel=0":"https://www.youtube-nocookie.com/embed/"+(o.v||"videoseries")+"?autoplay=1&playsinline=1&rel=0"+(o.l?"&list="+encodeURIComponent(o.l):"");
+const f=document.createElement("iframe");f.src=src;f.title="YouTube player";f.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";f.referrerPolicy="strict-origin-when-cross-origin";f.allowFullscreen=true;
+const body=$("ytbody");body.innerHTML="";body.append(f);$("ytt").textContent=title||"YouTube";$("yt").classList.remove("hidden","min");$("ytm").innerHTML="&minus;"}
+function stopYT(){$("ytbody").innerHTML="";$("yt").classList.add("hidden");if(tab==="yt"&&drawerOpen())panel()}
+$("ytx").onclick=stopYT;
+$("ytm").onclick=()=>{const m=$("yt").classList.toggle("min");$("ytm").innerHTML=m?"&#9633;":"&minus;"};
+(function(){const y=$("yt"),h=$("yth");let dx=0,dy=0,on=false;
+h.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;const r=y.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;on=true;try{h.setPointerCapture(e.pointerId)}catch(x){}y.style.right="auto";y.style.bottom="auto";y.style.left=r.left+"px";y.style.top=r.top+"px"});
+h.addEventListener("pointermove",e=>{if(!on)return;y.style.left=Math.max(0,Math.min(innerWidth-y.offsetWidth,e.clientX-dx))+"px";y.style.top=Math.max(0,Math.min(innerHeight-44,e.clientY-dy))+"px"});
+h.addEventListener("pointerup",()=>{on=false});h.addEventListener("pointercancel",()=>{on=false})})();
+const decode=s=>{const t=document.createElement("textarea");t.innerHTML=s;return t.value};
+const PIPED=["https://pipedapi.kavin.rocks","https://api.piped.private.coffee","https://pipedapi.adminforge.de"],INV=["https://inv.nadeko.net","https://yewtu.be"];
+async function jget(u){const c=new AbortController(),t=setTimeout(()=>c.abort(),6000);try{const r=await fetch(u,{signal:c.signal});if(!r.ok)throw new Error("bad");return await r.json()}finally{clearTimeout(t)}}
+async function yfind(q){const e=encodeURIComponent(q);
+if(PROXY){try{const j=await jget(PROXY.replace(/\/$/,"")+"/yt?q="+e);return j.length?j:null}catch(x){return null}}
+for(const h of PIPED){try{const j=await jget(h+"/search?q="+e+"&filter=videos");const r=(j.items||[]).map(x=>{const m=/[?&]v=([\w-]{11})/.exec(x.url||"");return m&&{id:m[1],title:x.title,by:x.uploaderName||""}}).filter(Boolean);if(r.length)return r}catch(x){}}
+for(const h of INV){try{const j=await jget(h+"/api/v1/search?q="+e+"&type=video");const r=(Array.isArray(j)?j:[]).filter(x=>x.videoId).map(x=>({id:x.videoId,title:x.title,by:x.author||""}));if(r.length)return r}catch(x){}}
+return null}
+async function ysearch(){const q=Y.q.trim();if(!q)return;if(!online()){Y.err="You are offline.";panel();return}const t=++Y.tok;Y.busy=true;Y.err="";Y.res=null;if(tab==="yt"&&drawerOpen())panel();
+const r=await yfind(q);if(t!==Y.tok)return;Y.busy=false;if(r)Y.res=r;else Y.err="Search is not available right now. Use the quick picks below, or try again in a bit.";if(tab==="yt"&&drawerOpen())panel()}
+function ytPanel(d){d.append(E("h3",null,"YouTube music"));
+d.append(E("p",null,"Search a song or mix, tap Play, and it plays in a mini player while you read."));
+if(!online())d.append(E("div","warn","You are offline. YouTube needs internet. Your uploaded tracks and starter sounds still work."));
+const g=E("form","fbar"),q=E("input");q.type="search";q.placeholder="Song, artist or mix";q.value=Y.q;q.oninput=()=>{Y.q=q.value};q.setAttribute("aria-label","Search YouTube");
+const sb=E("button",null,"Search");sb.type="submit";g.append(q,sb);g.onsubmit=e=>{e.preventDefault();Y.q=q.value;ysearch()};d.append(g);
+if(Y.err)d.append(E("div","warn",Y.err));if(Y.busy)d.append(E("p","note","Searching..."));
+(Y.res||[]).forEach(x=>{const it=E("div","item"),w=E("div");w.append(E("b",null,x.title||"Video"),E("span",null,x.by));
+const bt=E("div","bt"),p=E("button",null,"Play");p.onclick=()=>playYT({v:x.id},x.title);bt.append(p);it.append(w,bt);d.append(it)});
+d.append(E("h3",null,"Quick picks"));
+[["Lofi Girl - beats to relax/study to",{v:"rFZHOHl-L8A"}],["Lofi Girl - beats to sleep/chill to",{v:"JD-kMIpDfnY"}],["Lofi Girl - jazz lofi radio",{v:"E2vONfzoyRI"}]].forEach(([t,v])=>{const it=E("div","item"),w=E("div");w.append(E("b",null,t),E("span",null,"Live stream"));
+const bt=E("div","bt"),p=E("button",null,"Play");p.onclick=()=>playYT(v,t);bt.append(p);it.append(w,bt);d.append(it)});
+if(!$("yt").classList.contains("hidden")){const c=E("button","danger","Close player");c.style.marginTop="14px";c.onclick=stopYT;d.append(c)}}
+$("findb").onclick=()=>openDrawer("find");$("ytb").onclick=()=>openDrawer("yt");
+addEventListener("online",()=>{if(drawerOpen()&&(tab==="find"||tab==="yt"))panel()});
+addEventListener("offline",()=>{toast("You are offline. Finding books and YouTube need internet.",4000);if(drawerOpen()&&(tab==="find"||tab==="yt"))panel()});
 hud();shelf();idb("all").then(a=>{books=a||[];books.forEach(b=>{if(b.pdf&&!b.pages)b.pages=(S.np||{})[b.id]||0});shelf()});
 </script>
 </body>

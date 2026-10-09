@@ -40,7 +40,7 @@ Lamplit is a cozy reading room that runs in your browser. Your books stand on a 
 - **Add your own tracks** (MP3, WAV, OGG) as ambience or music. They stay on your device and get their own colour theme.
 
 ### YouTube mini player
-- Press **YouTube**, search for any song or mix, and tap **Play**. It opens in a small floating player, so you never leave the app.
+- Press **Music**, switch to the **YouTube** tab, search for any song or mix, and tap **Play**. It opens in a small floating player, so you never leave the app.
 - Drag it anywhere, minimise it, and keep reading while it plays. It stays open on every screen.
 - One-tap Lofi Girl quick picks are included. YouTube needs an internet connection.
 
@@ -62,7 +62,7 @@ Your shelf, bookmarks, progress and your own tracks are stored **in your own bro
 1. Press **Find books** to search free public domain books, or press **Add book** to upload your own DRM-free EPUB, PDF or TXT file.
 2. Click a spine to read. Press **Bookmark** to save your spot.
 3. Open **Sounds** at the bottom, pick an ambience and a music track, and watch the room change.
-4. Press **YouTube** to play any song in the mini player while you read.
+4. In **Music**, switch to the **YouTube** tab to play any song in the mini player while you read.
 
 ---
 

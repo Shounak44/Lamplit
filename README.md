@@ -151,9 +151,6 @@ To run your own copy, deploy `worker.js` as a Worker and put its address in the 
 - [x] YouTube mini player with search
 - [x] Highlights and notes (EPUB, TXT and PDF)
 - [x] Built-in dictionary tab
-- [ ] Google sign-in and Drive sync, so your shelf follows you between devices
-- [ ] Export and import your whole library as a backup
-- [ ] Reading text out of scanned PDFs (OCR), which would also allow highlights on them
 - [ ] Installable offline app (PWA)
 
 ---

@@ -699,8 +699,35 @@ if(p.x<-5)p.x=w+5;if(p.x>w+5)p.x=-5;if(p.y>h+5)p.y=-5;if(p.y<-5)p.y=h+5;
 ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fill()}ctx.globalAlpha=1}
 fxSize();fxMode("dust");addEventListener("resize",fxSize);if(!matchMedia("(prefers-reduced-motion:reduce)").matches)requestAnimationFrame(fxTick);
 /* daily quote (public domain authors) */
-const QUOTES=[["Faith is the bird that feels the light when the dawn is still dark.","Rabindranath Tagore"],["My library was dukedom large enough.","William Shakespeare"],["Books are the best of things, well used.","Ralph Waldo Emerson"],["A good book is the precious life-blood of a master spirit.","John Milton"],["Books are the quietest and most constant of friends.","Charles W. Eliot"],["Reading is at the threshold of the spiritual life.","Marcel Proust"],["A room without books is like a body without a soul.","Cicero"],["Let your life lightly dance on the edges of time like dew on the tip of a leaf.","Rabindranath Tagore"]];
-{const q=QUOTES[hash(dk(new Date()))%QUOTES.length],el=$("qt");el.textContent="“"+q[0]+"”";el.append(E("small",null,q[1]))}
+const QUOTES=[
+["Faith is the bird that feels the light when the dawn is still dark.","Rabindranath Tagore"],
+["Let your life lightly dance on the edges of time like dew on the tip of a leaf.","Rabindranath Tagore"],
+["The butterfly counts not months but moments, and has time enough.","Rabindranath Tagore"],
+["Let me not pray to be sheltered from dangers, but to be fearless in facing them.","Rabindranath Tagore"],
+["Clouds come floating into my life, no longer to carry rain or usher storm, but to add colour to my sunset sky.","Rabindranath Tagore"],
+["My library was dukedom large enough.","William Shakespeare"],
+["Books are the best of things, well used.","Ralph Waldo Emerson"],
+["A good book is the precious life-blood of a master spirit.","John Milton"],
+["Books are the quietest and most constant of friends.","Charles W. Eliot"],
+["Reading is at the threshold of the spiritual life.","Marcel Proust"],
+["Reading maketh a full man; conference a ready man; and writing an exact man.","Francis Bacon"],
+["Some books are to be tasted, others to be swallowed, and some few to be chewed and digested.","Francis Bacon"],
+["A book must be the axe for the frozen sea within us.","Franz Kafka"],
+["The reading of all good books is like a conversation with the finest minds of past centuries.","René Descartes"],
+["Words are, of course, the most powerful drug used by mankind.","Rudyard Kipling"],
+["Books are the treasured wealth of the world and the fit inheritance of generations and nations.","Henry David Thoreau"],
+["How many a man has dated a new era in his life from the reading of a book.","Henry David Thoreau"],
+["There is no frigate like a book to take us lands away.","Emily Dickinson"],
+["A man ought to read just as inclination leads him; for what he reads as a task will do him little good.","Samuel Johnson"],
+["Reading is to the mind what exercise is to the body.","Joseph Addison"],
+["While we are postponing, life speeds by.","Seneca"],
+["The true university of these days is a collection of books.","Thomas Carlyle"],
+["I declare after all there is no enjoyment like reading!","Jane Austen"],
+["What is the use of a book without pictures or conversations?","Lewis Carroll"],
+["The books that the world calls immoral are books that show the world its own shame.","Oscar Wilde"]];
+/* one quote per day, in order, so it never repeats until the whole list has been shown */
+function showQuote(){const n=Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5),q=QUOTES[n%QUOTES.length],el=$("qt");el.textContent="\u201c"+q[0]+"\u201d";el.append(E("small",null,q[1]))}
+showQuote();document.addEventListener("visibilitychange",()=>{if(!document.hidden)showQuote()});
 fillBounties();
 /* highlights, notes, dictionary */
 function renderPara(e,t,bid,i){const hs=S.hl.filter(h=>h.b===bid&&h.pi===i).sort((a,b)=>a.s-b.s);if(!hs.length){e.textContent=t;return}
